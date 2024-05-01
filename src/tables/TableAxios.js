@@ -4,7 +4,8 @@ import axios from "axios";
 import { listarCasas, listarJefesHogarByCasas } from "../services/api";
 import emotionStyled from "@emotion/styled";
 import React from 'react';
-import { Box, Button, Modal, makeStyles } from "@mui/material";
+import { Box, Button, Modal, ThemeProvider, makeStyles } from "@mui/material";
+import { createTheme } from '@mui/material/styles';
 
 export const TableAxios = () => {
 
@@ -20,6 +21,42 @@ export const TableAxios = () => {
         }
         fetchData();
     }, []);
+
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#FF5733',
+            },
+            secondary: {
+                main: '#E0C2FF',
+                light: '#F5EBFF',
+                contrastText: '#47008F',
+            },
+        },
+        components: {
+            MUIDataTableBodyCell: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: '#F5EBFF',
+                    }
+                }
+            },
+            MUIDataTableHeadCell: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: '#E0C2FF'
+                    }
+                }
+            },
+            MuiTableHead: {
+                styleOverrides: {
+                    root: {
+                        backgroundColor: '#E0C2FF'
+                    }
+                }
+            }
+        }
+    });
 
 
     const columns = [
@@ -96,38 +133,43 @@ export const TableAxios = () => {
     };
 
     return (
-        <div style={{width: "100%"}}>
-            <MUIDataTable
-                title={"Listado de Casas"}
-                data={houses}
-                columns={columns}
-                options={options}
-            />
 
-            <Modal
-                open={openModal}
-                onClose={handleCloseModal}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: "auto", bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
-                    <p id="modal-modal-description">
+        <div style={{ width: "100%", height: "100%" , backgroundColor: '#E0C2FF'}}>
+            <ThemeProvider theme={theme} variant={"secondary"}>
+                <div style={{ width: "70%", height: "70%", display: "inline-block", borderStyle: "inset" }}>
 
-                        {selectedRowData.length > 0 ? (
+                    <MUIDataTable
+                        title={"Listado de Casas"}
+                        data={houses}
+                        columns={columns}
+                        options={options}
+                    />
+                </div>
+                <Modal
+                    open={openModal}
+                    onClose={handleCloseModal}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                >
+                    <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: "auto", bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
+                        <p id="modal-modal-description">
 
-                            <MUIDataTable
-                                title={"Jefes de Hogar"}
-                                data={selectedRowData}
-                                columns={columnsJefe}
-                                options={optionsJefe}
-                            />
-                        ) : (
-                            <span>Esta Casa No tiene Jefes de Hogar Asignados</span>
-                        )}
-                    </p>
-                    <Button onClick={handleCloseModal}>Close</Button>
-                </Box>
-            </Modal>
+                            {selectedRowData.length > 0 ? (
+
+                                <MUIDataTable
+                                    title={"Jefes de Hogar"}
+                                    data={selectedRowData}
+                                    columns={columnsJefe}
+                                    options={optionsJefe}
+                                />
+                            ) : (
+                                <span>Esta Casa No tiene Jefes de Hogar Asignados</span>
+                            )}
+                        </p>
+                        <Button onClick={handleCloseModal}>Close</Button>
+                    </Box>
+                </Modal>
+            </ThemeProvider>
         </div>
 
     )
